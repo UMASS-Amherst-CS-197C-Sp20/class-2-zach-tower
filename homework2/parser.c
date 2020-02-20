@@ -51,4 +51,69 @@
 //write the float to floats.txt
 
 //once fscanf returns and EOF error return a successful exit status
+#include <stdbool.h>
+#include <stdio.h>
 
+#define IMODE 0
+#define CMODE 1
+#define FMODE 2
+#define DEFAULT -1
+
+#define ITOKEN 'I'
+#define CTOKEN 'C'
+#define FTOKEN 'F'
+
+int main(int argc, char *argv[]) {
+	FILE *input;
+	FILE *ifile;
+	FILE *cfile;
+	FILE *ffile;
+	char token[1024];
+	int mode = DEFAULT;
+
+	input = fopen("/nfs/elsrv4/users4/grad/ztower/class-2-zach-tower/homework2/input.txt", "r");
+	ifile = fopen("/nfs/elsrv4/users4/grad/ztower/class-2-zach-tower/homework2/ints.txt", "w");
+	cfile = fopen("/nfs/elsrv4/users4/grad/ztower/class-2-zach-tower/homework2/chars.txt", "w");
+	ffile = fopen("/nfs/elsrv4/users4/grad/ztower/class-2-zach-tower/homework2/floats.txt", "w");
+
+	while(fscanf(input, "%s", token) != EOF) {
+		/* debug tool
+		printf("Mode is %d\n", mode);
+		printf("Token is %s\n", token);
+		*/
+		switch(mode) {
+			case IMODE:
+				// we got an integer
+				fprintf(ifile, "%s\n", token);
+				mode = DEFAULT;
+				break;
+			case CMODE:
+				fprintf(cfile, "%s\n", token);
+				mode = DEFAULT;
+				break;
+			case FMODE:
+				fprintf(ffile, "%s\n", token);
+				mode = DEFAULT;
+				break;
+			default:
+				switch(token[0]) {
+					case ITOKEN:
+						mode = IMODE;
+						break;
+					case CTOKEN:
+						mode = CMODE;
+						break;
+					case FTOKEN:
+						mode = FMODE;
+						break;
+					default:
+						printf("%s\n", token);
+						return -1;
+				} // switch token
+		} // switch(mode)
+	} // while fscanf
+	fclose(input);
+	fclose(ifile);
+	fclose(cfile);
+	fclose(ffile);
+} // main
